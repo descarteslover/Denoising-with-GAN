@@ -20,10 +20,9 @@ class DenoisingGenerator(nn.Module):
         super(DenoisingGenerator, self).__init__()
 
         self.model = nn.Sequential(
-            """This model is not a true generative adversarial network.
-            There is only a generative model which minimizes a loss function, as opposed to minimizing
-            the discriminator as is the case for the GAN.
-            """
+            #This model is not a true generative adversarial network.
+            #There is only a generative model which minimizes a loss function, as opposed to minimizing
+            #the discriminator as is the case for the GAN.
             nn.Conv2d(3, 64, kernel_size=3, padding=1),
             nn.ReLU(inplace=True),
             nn.Conv2d(64, 64, kernel_size=3, padding=1),
@@ -78,7 +77,7 @@ def calculate_metrics(original, denoised):
         }
     return metrics_dict
 
-# Configuration
+
 sigma = 25  # Standard deviation of Gaussian noise
 epochs = 1000
 batch_size = 1
@@ -111,7 +110,9 @@ for epoch in tqdm(range(epochs), desc="Training"):
         
     if epoch % 100 == 0:
         print(f"Epoch {epoch}/{epochs} | Loss: {loss.item():.4f}")
-    
+   
+# Load previously trained model
+#generator.load_state_dict(torch.load(f'generator_model_n{sigma}_e{epochs}.pth'))
 # Generate denoised image
 with torch.no_grad():
     denoised_tensor = generator(noisy_tensor)
@@ -120,6 +121,18 @@ with torch.no_grad():
 to_pil = ToPILImage()
 denoised_image = to_pil(denoised_tensor.squeeze(0).cpu())
     
+#Calculate metrics
+noisy_metrics = calculate_metrics(original_image, noisy_image)
+denoised_metrics = calculate_metrics(original_image, denoised_image)
+
+print("\nNoisy Image Metrics:" )
+for name, value in noisy_metrics.items():
+    print(f"{name}: {value:.4f}")
+
+print("\nDenoised Image Metrics:")
+for name, value in denoised_metrics.items():
+    print(f"{name}: {value:.4f}")
+
 # Plot results
 plt.figure(figsize=(15, 5))
     
@@ -142,6 +155,6 @@ plt.tight_layout()
 plt.show()
     
 # Save results
-denoised_image.save(f'denoised_image_n{sigma}_e{epochs}.jpg')
+denoised_image.save(f'denoised_image_n{sigma}_e{epochs} second run.jpg')
 torch.save(generator.state_dict(), f'generator_model_n{sigma}_e{epochs}.pth')
 

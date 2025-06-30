@@ -14,7 +14,7 @@ os.environ['KMP_DUPLICATE_LIB_OK'] = 'TRUE'
 
 
 
-# GENERATIVE ADVERSERIAL NETWORK MODEL
+# GENERATIVE ADVERSERIAL ESQUE NETWORK LEARNING MODEL
 class DenoisingGenerator(nn.Module):
     def __init__(self):
         super(DenoisingGenerator, self).__init__()

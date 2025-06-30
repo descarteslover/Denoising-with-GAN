@@ -1,0 +1,11 @@
+Noisy Image Metrics:
+PSNR: 20.6154
+SSIM: 0.3928
+MSE: 564.3435
+NRMSE: 0.1599
+
+Denoised Image Metrics:
+PSNR: 32.3994
+SSIM: 0.8833
+MSE: 37.4235
+NRMSE: 0.0412

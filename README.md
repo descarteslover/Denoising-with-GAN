@@ -8,5 +8,5 @@ This code is meant to add noise to a given image, and employs a GAN-like model t
 
 ## TODO
 - Add training loss graph
-- Verify I can save a model from a run
+- Verify I can save a model from a previous run
 - Implement a discriminator

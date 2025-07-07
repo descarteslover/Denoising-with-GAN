@@ -14,15 +14,18 @@ os.environ['KMP_DUPLICATE_LIB_OK'] = 'TRUE'
 
 
 
-# GENERATIVE ADVERSERIAL ESQUE NETWORK LEARNING MODEL
+"""Note: This script uses a CNN-based generator for image denoising, 
+but it does not implement a full GAN architecture. There is no discriminator, and the training loss
+is based on the mean squared error (MSE) between the denoised output and the original clean image.
+
+This approach is intended as a simplified experimental test case.
+"""
+
 class DenoisingGenerator(nn.Module):
     def __init__(self):
         super(DenoisingGenerator, self).__init__()
 
         self.model = nn.Sequential(
-            #This model is not a true generative adversarial network.
-            #There is only a generative model which minimizes a loss function, as opposed to minimizing
-            #the discriminator as is the case for the GAN.
             nn.Conv2d(3, 64, kernel_size=3, padding=1),
             nn.ReLU(inplace=True),
             nn.Conv2d(64, 64, kernel_size=3, padding=1),
@@ -102,7 +105,11 @@ optimizer = optim.Adam(generator.parameters(), lr=0.001)
 
 ######
 
+#------------------------
 # Training loop
+#------------------------
+#This is NOT GAN training. We only train the generator using pixel-wise loss.
+#For true GANs, we would alternate between training the generator and a discriminator
 for epoch in tqdm(range(epochs), desc="Training"):
     optimizer.zero_grad()
     denoised = generator(noisy_tensor)

@@ -70,10 +70,10 @@ def calculate_metrics(original, denoised):
     denoised_gray = color.rgb2gray(denoised_np)
 
     metrics_dict = {
-        'PSNR': metrics.peak_signal_noise_ratio(original_np, denoised_np),
+        'PSNR': metrics.peak_signal_noise_ratio(original_gray, denoised_gray),
         'SSIM': metrics.structural_similarity(original_gray, denoised_gray,data_range=1.0, channel_axis=None),
-        'MSE': metrics.mean_squared_error(original_np, denoised_np),
-        'NRMSE': metrics.normalized_root_mse(original_np, denoised_np)
+        'MSE': metrics.mean_squared_error(original_gray, denoised_gray),
+        'NRMSE': metrics.normalized_root_mse(original_gray, denoised_gray)
         }
     return metrics_dict
 
@@ -99,7 +99,9 @@ noisy_tensor = noisy_tensor.to(device)
 generator = DenoisingGenerator().to(device)
 criterion = nn.MSELoss()
 optimizer = optim.Adam(generator.parameters(), lr=0.001)
-    
+
+######
+
 # Training loop
 for epoch in tqdm(range(epochs), desc="Training"):
     optimizer.zero_grad()
@@ -111,8 +113,18 @@ for epoch in tqdm(range(epochs), desc="Training"):
     if epoch % 100 == 0:
         print(f"Epoch {epoch}/{epochs} | Loss: {loss.item():.4f}")
    
+# Save the model after training
+torch.save(generator.state_dict(), f'generator_model_n{sigma}_e{epochs}.pth')
+
+## OR ##
+
 # Load previously trained model
+#generator = DenoisingGenerator()
 #generator.load_state_dict(torch.load(f'generator_model_n{sigma}_e{epochs}.pth'))
+#generator.eval() #Set the model to evaluation mode(as opposed to training mode)
+
+######
+
 # Generate denoised image
 with torch.no_grad():
     denoised_tensor = generator(noisy_tensor)
